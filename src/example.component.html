@@ -1,0 +1,43 @@
+<h1>
+    It's <span>${proj.name}</span>! Version of project: <span>${proj.version}</span>! 
+    <br> ${proj.custom}
+</h1>
+<img src=${proj.logo} />
+<h1>Attributes: <span>${proj.props}</span></h1>
+ <style>
+    @import url('https://fonts.googleapis.com/css?family=Roboto:300&display=swap');
+    #main{
+        background: #efefef;
+        height: 100%;
+        width: 100%;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        position: absolute;
+    }
+    h1{
+        font-family: 'Roboto', sans-serif;
+        font-weight: 100;
+        color: #301781;
+        padding: 10px;
+        text-align: center;
+        font-weight: 100;
+        line-height: 30px;
+    }
+    h1 span{
+        color: #301781;
+        padding: 5px 5px 1.5px 5px;
+        border-radius: 7.5px 7.5px 0 0;
+        background: #aaa5;
+        font-family: sans-serif;
+        border-bottom: 5px solid #301781;
+        margin: 10px;
+    }
+    img{
+        object-fit: cover;
+        height: 250px;
+        display: block;
+        margin: auto;
+    }
+ </style>
