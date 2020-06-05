@@ -8,10 +8,10 @@ TODOS: Easier File Accessing functions (?), Improved SPA Client Side Routing tha
 (?) - Optionals.
 
 For Contributors:
-AT FIRST, INSTALL ALL DEPENDECIES USING:  return
-``npm i`` at project root folder.  return
+AT FIRST, INSTALL ALL DEPENDECIES USING:
+``npm i`` at project root folder.
 
-Commands list:  return
+Commands list:
 ``
      "test": "echo \"Error: no test specified\" && exit 1",
     "watch": "webpack --watch",
