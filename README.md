@@ -8,7 +8,18 @@ TODOS: Easier File Accessing functions (?), Improved SPA Client Side Routing tha
 (?) - Optionals.
 
 For Contributors:
-AT FIRST, INSTALL ALL DEPENDECIES
+AT FIRST, INSTALL ALL DEPENDECIES USING:
+``npm i`` at project root folder.
+
+Commands list:
+``
+     "test": "echo \"Error: no test specified\" && exit 1",
+    "watch": "webpack --watch",
+    "open": "webpack-dev-server --open",
+    "start": "webpack-dev-server",
+    "server": "nodemon SERVER.js",
+    "build": "webpack"
+``
 
 Main contributors for now:
   - AzizbekTheDev
