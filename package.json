@@ -8,7 +8,7 @@
     "watch": "webpack --watch",
     "open": "webpack-dev-server --open",
     "start": "webpack-dev-server",
-    "server": "nodemon SERVER.js",
+    "server": "nodemon  Server/SERVER.js",
     "build": "webpack"
   },
   "keywords": [],
