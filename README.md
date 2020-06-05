@@ -20,7 +20,9 @@ Commands list (from ``Package.json`` file):
 ``  "server": "nodemon SERVER.js" `` - Run Express-powered server demo (not ready yet) <br />
 ``  "build": "webpack" `` - Build all files using Webpack <br />
 
-Main contributors for now:
+Main planned contributors for now:
   - AzizbekTheDev
   - MCPEBlocker
   - NekoDerek
+  - JavoxirWebDeveloper
+  - KR1470R
