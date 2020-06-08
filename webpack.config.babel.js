@@ -12,7 +12,7 @@ const isDevelopment = process.env.NODE_ENV === 'development';
 var obj = {
   entry: {
     mainApp: path.join(__dirname, 'src/main.app.js'),
-    lesserJS: path.join(__dirname, 'lesser.framework.js')
+    legacy: path.join(__dirname, 'Lesser.js')
   },
   output: {
     path: path.join(__dirname, 'dist'),
