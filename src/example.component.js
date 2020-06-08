@@ -5,15 +5,21 @@ export class ExElem extends Lesser.Component {
         super();
         this.openShadow();
         
-        this.shadowRoot.appendChild(
-            $Element(
-                html`
-                <h1> Wassup </h1>
-                `
-            )
-        )
+        let varrr = "Hi bruh";
 
-        this.appendChild($Element(html`<h1>Hey</h1>`));
+       this.addHTML(
+        html`
+            <h1> Aye, ${varrr} </h1>
+        `
+       );
+
+       this.addCSS(
+        css`
+            h1 {
+                color: blue;
+            }
+        `
+       );
     }
 }
 

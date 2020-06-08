@@ -30,6 +30,18 @@ export const Lesser = {
     disconnectedCallback() {
       this.disconnected();
     }
+
+    addHTML(htmlLIT) {
+      this.shadowRoot.appendChild(
+        $Element(htmlLIT)
+      );
+    }
+
+    addCSS(cssLIT) {
+      this.shadowRoot.appendChild(
+        cssLIT
+      )
+    }
   },
   Define: (tagName, className) => {
     if(tagName.includes("-")) window.customElements.define(tagName, className);
@@ -59,36 +71,48 @@ export function css(literals, ...vars) {
     i++;
   }
   result += raw[raw.length - 1];
-  styleElem = document.createElement("style");
+  let styleElem = document.createElement("style");
   styleElem.textContent = result;
   return styleElem;
 }
 
 export function $Elements(markup) {
-  let supported = (function () {
-    if (!window.DOMParser) return false;
-    var parser = new DOMParser();
-    try {
-      parser.parseFromString('x', 'text/html');
-    } catch(err) {
-      return false;
+  /*if (typeof document.body.insertAdjacentHTML === "function") {
+    let template = document.createElement("template");
+    template.insertAdjacentHTML("beforeend", markup);
+    return template.childNodes;
+  } else {*/
+    let supported = (function () {
+      if (!window.DOMParser) return false;
+      var parser = new DOMParser();
+      try {
+        parser.parseFromString('x', 'text/html');
+      } catch(err) {
+        return false;
+      }
+      return true;
+    })();
+    
+    if (supported) {
+      var parser = new DOMParser();
+      var doc = parser.parseFromString(markup, 'text/html');
+      return doc.body.childNodes;
+//   }
     }
-    return true;
-  })();
-
-  if (supported) {
-    var parser = new DOMParser();
-		var doc = parser.parseFromString(markup, 'text/html');
-		return doc.body.childNodes;
-  }
-
+    
   const temp = document.createElement('div');
   temp.innerHTML = markup;
   return temp.childNodes;
 }
 
 export function $Element(markup) {
-
+  /*if (typeof document.body.insertAdjacentHTML === "function") {
+    let fragment = document.createDocumentFragment();
+    let template = document.createElement("template");
+    template.insertAdjacentHTML("beforeend", markup);
+    fragment = template.content;
+    return fragment;
+  } else {*/
   let supported = (function () {
     if (!window.DOMParser) return false;
     var parser = new DOMParser();
@@ -107,6 +131,7 @@ export function $Element(markup) {
     const children = Array.prototype.slice.apply(doc.body.childNodes);
     children.map(el => frag.appendChild(el));
     return frag;
+// }
   }
 
   const temp = document.createElement('div');
@@ -116,4 +141,10 @@ export function $Element(markup) {
   children.map(el => frag.appendChild(el));
   return frag;
 }
+
+export let $ = document.querySelectorAll;
+
+(() => {
+  
+});
 
