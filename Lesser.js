@@ -144,7 +144,24 @@ export function $Element(markup) {
 
 export let $ = document.querySelectorAll;
 
+export let Version = "1.0.0";
+
 (() => {
-  
-});
+  document.querySelectorAll("[bind]").forEach(binder => {
+    if (binder.tagName.toLowerCase() == "input") {
+      let varName = binder.getAttribute("bind");
+      binder.value = window[varName]; 
+      binder.oninput = () => {
+        window[varName] = binder.value;
+        console.log(`${window[binder.getAttribute("bind")]} = ${binder.value}`);
+        $("[bind]").forEach(binded => {
+          if (binded.tagName.toLowerCase() == "input") binded.value = binder.value;
+          else binded.innerHTML = binder.value;
+        })
+      }
+    } else {
+      console.log("test");
+    }
+  });
+})();
 
