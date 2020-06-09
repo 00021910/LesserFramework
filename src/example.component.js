@@ -10,8 +10,8 @@ export class ExElem extends Lesser.Component {
        this.addHTML(
         html`
             <h1> Aye, ${varrr} </h1>
-            <input type="text" bind="varrr" />
-            <input type="text" bind="varrr" />
+            <input type="text" bind="varrr2" />
+            <input type="text" bind="varrr2" />
             <p> ${varrr} </p>
         `
        );

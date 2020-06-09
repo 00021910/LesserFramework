@@ -142,26 +142,32 @@ export function $Element(markup) {
   return frag;
 }
 
-export let $ = document.querySelectorAll;
-
 export let Version = "1.0.0";
 
-(() => {
+//(() => {
   document.querySelectorAll("[bind]").forEach(binder => {
-    if (binder.tagName.toLowerCase() == "input") {
-      let varName = binder.getAttribute("bind");
+    let varName = binder.getAttribute("bind");
+    if (binder.tagName.toLowerCase() == "input" || binded.tagName.toLowerCase() == "textarea") {
       binder.value = window[varName]; 
       binder.oninput = () => {
         window[varName] = binder.value;
         console.log(`${window[binder.getAttribute("bind")]} = ${binder.value}`);
-        $("[bind]").forEach(binded => {
-          if (binded.tagName.toLowerCase() == "input") binded.value = binder.value;
-          else binded.innerHTML = binder.value;
-        })
+        document.querySelectorAll("[bind]").forEach(binded => {
+          if (binded.tagName.toLowerCase() == "input" || binded.tagName.toLowerCase() == "textarea") binded.value = binder.value;
+          else {
+            if (binded.shadowRoot && binded.shadowRoot.childNodes) {
+              binded.childNodes.forEach(e => {
+                if (e.tagName.toLowerCase() == "input") e.value = binder.value;
+              })
+          } else {
+            binded.innerHTML = binder.value;
+          }
+          }
+        });
       }
     } else {
-      console.log("test");
+      binder.innerHTML = window[varName];
     }
   });
-})();
+//})();
 
