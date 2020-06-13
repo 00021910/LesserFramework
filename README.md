@@ -1,6 +1,6 @@
-# PRIVATE REPO OF LesserFramework
+# REPO OF LesserFramework
 
-**LesserFramework** - handmade framework made by bunch of teenagers. This is fa handcrafted under-development framework that is capable of making SPA (in-development), client-side routing (also in-development with SPA) and Custom Web Componends powered by Shadow DOM.
+**LesserFramework** - handmade framework made by bunch of teenagers. This is a handcrafted under-development framework that is capable of making SPA (in-development), client-side routing (also in-development with SPA) and Custom Web Componends powered by Shadow DOM.
 
 IN-PROCESS: Optimizing, Bug fixing, Rendering HTML files as SPA pages, 2 way binding.
 TODOS: Easier File Accessing functions (?), Improved SPA Client Side Routing that is completely synchronized with browser history, Server-Side example demo (?)
