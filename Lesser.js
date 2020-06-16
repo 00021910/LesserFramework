@@ -1,3 +1,5 @@
+export let Version = "1.0.0";
+
 export const Lesser = {
   Component: class extends HTMLElement {
     constructor() {
@@ -46,6 +48,7 @@ export const Lesser = {
   Define: (tagName, className) => {
     if(tagName.includes("-")) window.customElements.define(tagName, className);
     else window.customElements.define(`l-${tagName}`, className); 
+    bindGlobally(document.querySelector(tagName));
   }
 };
 
@@ -142,32 +145,22 @@ export function $Element(markup) {
   return frag;
 }
 
-export let Version = "1.0.0";
-
-//(() => {
-  document.querySelectorAll("[bind]").forEach(binder => {
+export let bindGlobally = (elem) => {
+  let rootPoint;
+  if (elem.toString() == "[object ShadowRoot]") rootPoint = elem.shadowRoot;
+  else rootPoint = elem;
+  rootPoint.querySelectorAll("[bind]").forEach(binder => {
     let varName = binder.getAttribute("bind");
     if (binder.tagName.toLowerCase() == "input" || binded.tagName.toLowerCase() == "textarea") {
       binder.value = window[varName]; 
       binder.oninput = () => {
         window[varName] = binder.value;
         console.log(`${window[binder.getAttribute("bind")]} = ${binder.value}`);
-        document.querySelectorAll("[bind]").forEach(binded => {
-          if (binded.tagName.toLowerCase() == "input" || binded.tagName.toLowerCase() == "textarea") binded.value = binder.value;
-          else {
-            if (binded.shadowRoot && binded.shadowRoot.childNodes) {
-              binded.childNodes.forEach(e => {
-                if (e.tagName.toLowerCase() == "input") e.value = binder.value;
-              })
-          } else {
-            binded.innerHTML = binder.value;
-          }
-          }
-        });
       }
     } else {
       binder.innerHTML = window[varName];
     }
-  });
-//})();
+  })
+}
 
+bindGlobally(document);
