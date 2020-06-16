@@ -23,4 +23,5 @@ Commands list (from ``Package.json`` file):
 ``  "server": "nodemon SERVER.js" `` - Run Express-powered server demo (not ready yet) <br />
 ``  "build": "webpack" `` - Build all files using Webpack <br />
 
-Thanks for contirbuting.
+Do not own this whole thing without mentioning author(s).
+Thanks for contirbuting, by the way.
