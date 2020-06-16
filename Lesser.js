@@ -17,10 +17,7 @@ export const Lesser = {
       this.attachShadow({mode: "closed"});
     }
     registerAs(tagname = "") {
-      if(tagname.trim() != "") {
-        if(tagname.includes("-")) window.customElements.define(tagname, this);
-        else window.customElements.define(`l-${tagname}`, this); 
-      }
+      Lesser.define(this, tagname)
     }
     connected() {}
     disconnected() {}
@@ -48,7 +45,7 @@ export const Lesser = {
   Define: (tagName, className) => {
     if(tagName.includes("-")) window.customElements.define(tagName, className);
     else window.customElements.define(`l-${tagName}`, className); 
-    bindGlobally(document.querySelector(tagName));
+    bindGlobally(document.querySelector(tagName), className);
   }
 };
 
@@ -145,17 +142,24 @@ export function $Element(markup) {
   return frag;
 }
 
-export let bindGlobally = (elem) => {
+export let bindGlobally = (elem, scope = window) => {
   let rootPoint;
-  if (elem.toString() == "[object ShadowRoot]") rootPoint = elem.shadowRoot;
+  if (elem.shadowRoot) rootPoint = elem.shadowRoot;
   else rootPoint = elem;
   rootPoint.querySelectorAll("[bind]").forEach(binder => {
     let varName = binder.getAttribute("bind");
-    if (binder.tagName.toLowerCase() == "input" || binded.tagName.toLowerCase() == "textarea") {
+    if (binder.tagName.toLowerCase() == "input" || binder.tagName.toLowerCase() == "textarea") {
       binder.value = window[varName]; 
       binder.oninput = () => {
         window[varName] = binder.value;
-        console.log(`${window[binder.getAttribute("bind")]} = ${binder.value}`);
+        console.log(`Val: ${binder.value}`);
+        rootPoint.querySelectorAll("[bind]").forEach(_binded => {
+          if (_binded.tagName.toLowerCase() == "input" || _binded.tagName.toLowerCase() == "textarea") {
+            _binded.value = window[varName];
+          } else {
+            _binded.innerHTML = window[varName];
+          }
+        });
       }
     } else {
       binder.innerHTML = window[varName];
