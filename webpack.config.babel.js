@@ -1,3 +1,5 @@
+// TODO: Use rollup next time. Or any filthy piece of crap, except this one. THIS ONE IS WORSHIPPED BY SATAN.
+
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ScriptExtHtmlWebpackPlugin = require('script-ext-html-webpack-plugin');
@@ -9,10 +11,10 @@ const {
 
 const isDevelopment = process.env.NODE_ENV === 'development';
 
-var obj = {
+var config = {
   entry: {
     mainApp: path.join(__dirname, 'src/main.app.js'),
-    legacy: path.join(__dirname, 'Lesser.js')
+    // legacy: path.join(__dirname, 'Lesser.js')
   },
   output: {
     path: path.join(__dirname, 'dist'),
@@ -26,6 +28,15 @@ var obj = {
         use: [{
           loader: 'babel-loader'
         }]
+      },
+      {
+        test: /\.(html)$/,
+        use: {
+          loader: 'html-loader',
+          options: {
+            attrs: [':data-src']
+          }
+        }
       },
       {
         test: /\.css$/,
@@ -87,20 +98,11 @@ var obj = {
             }
           }
         ]
-      },
-      {
-        test: /\.(html)$/,
-        use: {
-          loader: 'html-loader',
-          options: {
-            attrs: [':data-src']
-          }
-        }
       }
     ]
   },
   resolve: {
-    extensions: ['.js', '.jsx', "ts", "tsx", '.scss', '.gif', '.png', '.jpg', '.jpeg', '.svg']
+    extensions: ['.js', '.jsx', "ts", "tsx", '.scss', '.gif', '.png', '.jpg', '.jpeg', '.svg', ".css"]
   },
   plugins: [
     new CleanWebpackPlugin(),
@@ -131,4 +133,4 @@ var obj = {
 
 };
 
-module.exports = obj;
+module.exports = config;
