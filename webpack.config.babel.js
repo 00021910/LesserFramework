@@ -66,7 +66,7 @@ var config = {
           'file-loader',
         ],
       },
-      {
+      /*{
         test: /\.module\.s(a|c)ss$/,
         loader: [
           isDevelopment ? 'style-loader' : MiniCssExtractPlugin.loader,
@@ -98,7 +98,15 @@ var config = {
             }
           }
         ]
-      }
+      }*/
+      {
+        test: /\.css$/,
+        loader: ['style-loader', 'css-loader']
+      },
+      {
+          test: /\.scss|\.sass$/,
+          loader: ['style-loader', 'css-loader', 'sass-loader'],
+      },
     ]
   },
   resolve: {
@@ -128,7 +136,9 @@ var config = {
     contentBase: './dist',
     inline: true,
     port: 7070,
-    hot: true
+    hot: true,
+    clientLogLevel: 'silent',
+    historyApiFallback: true,
   }
 
 };

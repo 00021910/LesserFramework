@@ -52,7 +52,7 @@ export const Lesser = {
     }
     addCSS(cssLIT) {
       this.shadowRoot.appendChild(
-        cssLIT
+        $Element(`<style>${cssLIT}</style>`)
       )
     }
   },
@@ -66,9 +66,16 @@ export const Lesser = {
   },
 
   Router: {
-    rootElement: (elem=new HTMLElement()) => {
-
-    }
+    root: document.body,
+    routeMap: {},
+    setRoot: (elem) => {
+      Lesser.Router.root = elem;
+    },
+    assignRoutes: (routes=[]) => {
+      for (let r of routes) {
+        Lesser.Router.routeMap[r.path] = r;
+      }
+    },
   },
   Route: class {
     constructor(path="/", content, hashRoutes=[]) {
@@ -77,6 +84,7 @@ export const Lesser = {
       this.hashRoutes = hashRoutes;
     }
     static newHashRoute(hashpath, content) {
+      let R_hashpath;
       if (hashpath[0] == "#") R_hashpath = hashpath;
       else R_hashpath = `#${hashpath}`;
       return {R_hashpath: content}      
@@ -92,42 +100,44 @@ export const Lesser = {
     comptyp: (_, type) => {
       return typeof _ == type;
     },
-    isNumeric: (_=0) => Lesser.Utils.comptyp(_, "number"),
-    isString: (_="String") => Lesser.Utils.comptyp(_, "string"),
-    isChar: (_="_") => Lesser.Utils.comptyp(_, "symbol"),
-    isObj: (_={}) => Lesser.Utils.comptyp(_, "object"),
-    isBool: (_=true) => Lesser.Utils.comptyp(_, "boolean"),
-    isUndef: (_=undefined) => Lesser.Utils.comptyp(_, "undefined"),
-    isBig: (_=new BigInt()) => Lesser.Utils.comptyp(_, "bigint"),
-    isFunc: (_=function(){}) => Lesser.Utils.comptyp(_, "function"),
+    isNum: (_=0) => Utils.comptyp(_, "number"),
+    isStr: (_="String") => Utils.comptyp(_, "string"),
+    isChar: (_="_") => Utils.comptyp(_, "symbol"),
+    isObj: (_={}) => Utils.comptyp(_, "object"),
+    isBool: (_=true) => Utils.comptyp(_, "boolean"),
+    isUndf: (_=undefined) => Utils.comptyp(_, "undefined"),
+    isBig: (_=new BigInt()) => Utils.comptyp(_, "bigint"),
+    isFunc: (_=function(){}) => Utils.comptyp(_, "function"),
     __show_warnings_RandomC__: true,
     Random: class {
       static suppressWarnings() {
-        Lesser.Utils.__show_warnings_RandomC__ = false;
+        Utils.__show_warnings_RandomC__ = false;
         return this;
       }
       static showWarnings() {
-        Lesser.Utils.__show_warnings_RandomC__ = true;
+        Utils.__show_warnings_RandomC__ = true;
         return this;
       }
       static $seed(min=0, max=1, seed=null) {
-        if (seed != null && (Lesser.Utils.isNumeric(seed) || Lesser.Utils.isString(seed))) {
+        if (seed != null && (Utils.isNum(seed) || Utils.isStr(seed))) {
           console.log("Seed found...");
-          if (Lesser.Utils.isString(seed)) seed = parseInt(seed); 
+          if (Utils.isStr(seed)) seed = parseInt(seed); 
           let s = ( seed * 9301 + 49297 ) % 233280;
           let r = s / 233280;
           let d = Math.abs( Math.sin(seed));
           r = (r + d) - Math.floor((r + d));
           return Math.floor(min + r * (max - min + 1));
-        } else{
+        } else {
           console.log("Seed not found");
-          if (Lesser.Utils.__show_warnings_RandomC__ && true) console.alert("Could not initialize seeding in getRnd method [Lesser.Utils.Random.getRnd()], using built-in function to return random...");
+          if (Utils.__show_warnings_RandomC__) console.alert("Could not run seeding in getRnd method [Lesser.Utils.Random.getRnd()], using built-in browser function to return random float...");
           return Math.floor( Math.random() * ( max - min + 1 ) ) + min;
         }
       }
     }
   }
 };
+
+var { Utils } = Lesser;
 
 function makeLit(literals, ...vars) {
   let raw = literals.raw, result = '', i = 1, len = arguments.length, str, variable;
@@ -143,12 +153,12 @@ function makeLit(literals, ...vars) {
 }
 
 export function html(literals, ...vars) {
-  return makeLit(literals, ...vars);
+  let result = makeLit(literals, ...vars);
+  return result;
 }
 export function css(literals, ...vars) {
-  let styleElem = document.createElement("style");
-  styleElem.textContent = makeLit(literals, ...vars);
-  return styleElem;
+  let result = makeLit(literals, ...vars);
+  return result;
 }
 
 // WTH DOES THAT DO? CHANGE SOME MARKUP STRING INTO HTML ELEMENT INSIDE A FRAGMENT OBJECT? HELL NO... But it is not working without these functions, so they will stay
@@ -180,7 +190,7 @@ export function $Elements(markup) {
   temp.innerHTML = markup;
   return temp.childNodes;
 }
-// Another amusing chunk of amateur work. Bravo, past me. (And, keeping "unneccesary" code in comments... Brilliant. Goddamn brilliant.)
+// Another amusing chunk of amateur work. Bravo, past me. (And, keeping "unneccesary" code in comments... Brilliant, m8)
 export function $Element(markup) {
   /*if (typeof document.body.insertAdjacentHTML === "function") {
     let fragment = document.createDocumentFragment();
@@ -251,6 +261,8 @@ export class BindingManager {
 }
 
 export const GlobalBinds = new BindingManager();
+GlobalBinds.logLocalBindings = undefined;
+GlobalBinds.logAllBindings = undefined;
 
 let cachedBinds = {}
 
@@ -278,7 +290,7 @@ let execBindTag = (binder, scope, varName) => {
       binder.innerHTML = scope[_sckey];
       return
     }
-    let randomizedAddress = Lesser.Utils.Random.showWarnings().$seed(0, 999999, Math.random());
+    let randomizedAddress = Random.showWarnings().$seed(0, 999999, Math.random());
     binder.setAttribute("addressaftercaching", randomizedAddress);
     cachedBinds[randomizedAddress] = new CachedBind({bindKey: tmp, bindValue: scope[tmp], randomizedAddress: randomizedAddress});
     cachedBindValues[tmp] = randomizedAddress;
@@ -290,6 +302,9 @@ let execBindTag = (binder, scope, varName) => {
 }
 
 // !__EXPERIMENTAL__! (Did I fuck up?? Probably. At least, it is working...)
+// Performance is not that good. Place over 70 bind tags, binded to same variable, and it will start to lag. But it works well with input binds
+// Using bind attribute is highly recommended, performance is +228% higher that way (tested on Opera GX)
+// lag limit: ~160 paragraph tags with bind tags; Almost same with input tags; ~70 bind tags;
 export let BindScan = (elem, scope = window /** WINDOW? WTF? THAT IS TERRIBLE! Too bad..! */) => {
   let rootPoint;
   console.log(scope);
@@ -308,8 +323,6 @@ export let BindScan = (elem, scope = window /** WINDOW? WTF? THAT IS TERRIBLE! T
        _SelectableElements.forEach(_binded => {
           if (_binded.tagName.toLowerCase() == "input" || _binded.tagName.toLowerCase() == "textarea") {
             _binded.value = scope[varName];
-            console.log(_binded.value);
-            GlobalBinds.logAllBindings();
           } else {
            execBindTag(_binded, scope, varName);
           }
