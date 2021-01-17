@@ -23,7 +23,7 @@ export const Lesser = {
     // TODO: IT IS NOT WORKING, MAKE IT WORK, CUNT!
     registerAs(tagname = "") {
       Lesser.define(this, tagname)
-    }
+    } // TODO 2#: I should remove this chunk of code asap. Its pretty much useless, just like this project itself.
 
     // Some basic stuff
     OnInit() {}
@@ -34,7 +34,7 @@ export const Lesser = {
       this.remove();
     }
 
-    // Using built in shadow DOM callbacks and making it look like its framework's magic using OnInit and OnDestroy methods... I am a horrible human being.
+    // Using built in shadow DOM callbacks and making it look like its framework's magic using OnInit and OnDestroy methods... I am a lazy and horrible human being.
     connectedCallback() {
       this.OnInit();
     }
@@ -43,7 +43,7 @@ export const Lesser = {
     }
 
     // These two funcs are designed to add html and css literals to the shadow root (component's root).
-    // Well, I knew why I wrote that $Element function and why I put it here, but now, only god knows.
+    // Well, I knew why and how I wrote that $Element function and why I put it here, but now, only god knows.
     // So, it stays, because it is still working.
     addHTML(htmlLIT) {
       this.shadowRoot.appendChild(
@@ -57,7 +57,7 @@ export const Lesser = {
     }
   },
 
-  // Registering the Component Class as a Custom Web Component. But it should include dash ("-"), so I made this bloody awful method 
+  // Registering the Component Class as a Custom Web Component. But it should include dash ("-"), otherwise it'll be ignored & fucked up. So I made this bloody awful method 
   Define: (tagName, className) => {
     if (tagName.includes("-")) window.customElements.define(tagName, className);
     else window.customElements.define(`l-${tagName}`, className); 
@@ -65,24 +65,36 @@ export const Lesser = {
     BindScan(document.querySelector(tagName), GlobalBinds.variables);
   },
 
+  // Half-ass Router object for managing SPA-routing and stuff.
   Router: {
+    enabled: true,
     root: document.body,
     routeMap: {},
+    hashrouteMap: {},
     setRoot: (elem) => {
       Lesser.Router.root = elem;
     },
+    routeTo: (pathName = "/" ) => {
+        window.history.pushState({}, pathName, window.location.origin + pathName);
+        Lesser.Router.root.innerHTML = Lesser.Router.routeMap[pathName].content;
+    }, // OMFG I CANT BELIEVE IT - IT IS ACTUALLY WORKING AAAAHHHHH
     assignRoutes: (routes=[]) => {
       for (let r of routes) {
         Lesser.Router.routeMap[r.path] = r;
       }
     },
+    assignRoutemap: (routemap={}) => {
+      Lesser.Router.routeMap = Object.assign(Lesser.Router.routeMap, routemap);
+    }
   },
+  // Basic Route object, routes are gonna be instances of this class.
   Route: class {
-    constructor(path="/", content, hashRoutes=[]) {
+    constructor(path="/", content="", hashRoutes=[]) {
       this.path = path;
       this.content = content;
       this.hashRoutes = hashRoutes;
     }
+    // Special one for hashroutes. Why not, right?
     static newHashRoute(hashpath, content) {
       let R_hashpath;
       if (hashpath[0] == "#") R_hashpath = hashpath;
@@ -108,7 +120,7 @@ export const Lesser = {
     isUndf: (_=undefined) => Utils.comptyp(_, "undefined"),
     isBig: (_=new BigInt()) => Utils.comptyp(_, "bigint"),
     isFunc: (_=function(){}) => Utils.comptyp(_, "function"),
-    __show_warnings_RandomC__: true,
+    __show_warnings_RandomC__: false,
     Random: class {
       static suppressWarnings() {
         Utils.__show_warnings_RandomC__ = false;
@@ -118,7 +130,7 @@ export const Lesser = {
         Utils.__show_warnings_RandomC__ = true;
         return this;
       }
-      static $seed(min=0, max=1, seed=null) {
+      static seed(min=0, max=1, seed=null) {
         if (seed != null && (Utils.isNum(seed) || Utils.isStr(seed))) {
           console.log("Seed found...");
           if (Utils.isStr(seed)) seed = parseInt(seed); 
@@ -129,7 +141,7 @@ export const Lesser = {
           return Math.floor(min + r * (max - min + 1));
         } else {
           console.log("Seed not found");
-          if (Utils.__show_warnings_RandomC__) console.alert("Could not run seeding in getRnd method [Lesser.Utils.Random.getRnd()], using built-in browser function to return random float...");
+          if (Utils.__show_warnings_RandomC__) console.warn("Could not run seeding in getRnd method [Lesser.Utils.Random.getRnd()], using built-in browser function to return random float...");
           return Math.floor( Math.random() * ( max - min + 1 ) ) + min;
         }
       }
@@ -137,11 +149,25 @@ export const Lesser = {
   }
 };
 
+if (Lesser.Router.enabled) { 
+  window.onbeforeunload = function() {
+    Lesser.Router.routeTo(window.location.pathname);
+  };
+  
+  window.onload = function() {
+    Lesser.Router.routeTo(window.location.pathname);
+  };
+  
+  window.onpopstate = () => {
+    Lesser.Router.routeTo(window.location.pathname);
+  };
+}
+
 var { Utils } = Lesser;
 
 function makeLit(literals, ...vars) {
   let raw = literals.raw, result = '', i = 1, len = arguments.length, str, variable;
-  // TODO: Sanitize before transfering the data
+  // TODO: Sanitize before transfering the data, knobhead
   while (i < len) {
     str = raw[i - 1];    
     variable = vars[i -1];
@@ -152,6 +178,7 @@ function makeLit(literals, ...vars) {
   return result;
 }
 
+// Holy hell, these functions are USELESS
 export function html(literals, ...vars) {
   let result = makeLit(literals, ...vars);
   return result;
@@ -161,7 +188,7 @@ export function css(literals, ...vars) {
   return result;
 }
 
-// WTH DOES THAT DO? CHANGE SOME MARKUP STRING INTO HTML ELEMENT INSIDE A FRAGMENT OBJECT? HELL NO... But it is not working without these functions, so they will stay
+// WTH DOES THAT DO? CONVERT SOME MARKUP STRING INTO HTML ELEMENT INSIDE A FRAGMENT OBJECT? WHYYY?!?! HELL NO... But it is not working without these functions, so they will stay
 export function $Elements(markup) {
  /* if (typeof document.body.insertAdjacentHTML === "function") {
     let template = document.createElement("template");
@@ -290,7 +317,7 @@ let execBindTag = (binder, scope, varName) => {
       binder.innerHTML = scope[_sckey];
       return
     }
-    let randomizedAddress = Random.showWarnings().$seed(0, 999999, Math.random());
+    let randomizedAddress = Utils.Random.showWarnings().seed(0, 999999, Math.random());
     binder.setAttribute("addressaftercaching", randomizedAddress);
     cachedBinds[randomizedAddress] = new CachedBind({bindKey: tmp, bindValue: scope[tmp], randomizedAddress: randomizedAddress});
     cachedBindValues[tmp] = randomizedAddress;
