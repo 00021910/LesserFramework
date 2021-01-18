@@ -1,9 +1,6 @@
 # REPO OF LesserFramework
 
-**LesserFramework** - handmade framework made by nerd(s). This is a handcrafted under-development framework that is capable of making SPA (planned, in-development), client-side routing (also in-development with SPA), 2 way data binding (in-development) and Custom Web Componends powered by Shadow DOM.
-
-IN-PROCESS: Optimizing, Bug fixing, Rendering HTML files as SPA pages, 2 way binding.
-TODOS: Easier File Accessing functions (?), Improved SPA Client Side Routing that is completely synchronized with browser history, Server-Side example demo (?)
+**LesserFramework** - handmade framework made by nerd(s). This is a handcrafted under-development framework that is capable of making SPA, client-side routing, 2 way data binding and Custom Web Componends powered by Shadow DOM.
 
 (?) - Optionals.
 
@@ -20,8 +17,6 @@ Commands list (from ``Package.json`` file):
 ``  "watch": "webpack --watch" `` - Webpack watches over the files & rebuilds when files are changed <br />
 ``  "open": "webpack-dev-server --open" `` - Automatically dev-server opens in default browser <br />
 ``  "start": "webpack-dev-server" `` - Start the dev server <br />
-``  "server": "nodemon SERVER.js" `` - Run Express-powered server demo (not ready yet) <br />
 ``  "build": "webpack" `` - Build all files using Webpack <br />
 
 Do not own this whole thing without mentioning author(s).
-Thanks for contirbuting, by the way.
